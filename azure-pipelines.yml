@@ -1,0 +1,27 @@
+# Exemplo de pipeline minimal para construir e restaurar uma solução .NET
+
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  solutionPath: './APITempoDIO/*.sln'
+  compilePlatform: 'Any CPU'
+  compileConfig: 'Release'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Configurar .NET SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '8.x'
+
+- script: |
+    dotnet restore $(solutionPath)
+  displayName: 'Restaurar dependências'
+
+- script: |
+    dotnet build $(solutionPath) --configuration $(compileConfig)
+  displayName: 'Compilar projeto'
